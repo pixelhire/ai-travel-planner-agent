@@ -188,11 +188,11 @@ Plan a 6 day trip to Bali
 Agent Response
 
 ```
-Day 1: Arrival in Bali  
-Day 2: Explore Ubud  
-Day 3: Nusa Penida Day Trip  
-Day 4: Tanah Lot & Canggu  
-Day 5: Beach relaxation  
+Day 1: Arrival in Bali
+Day 2: Explore Ubud
+Day 3: Nusa Penida Day Trip
+Day 4: Tanah Lot & Canggu
+Day 5: Beach relaxation
 Day 6: Departure
 ```
 
@@ -220,7 +220,7 @@ Open the application in your browser:
 http://localhost:8000
 ```
 
----
+<!-- ---
 
 # Future Improvements
 
@@ -231,7 +231,7 @@ http://localhost:8000
 • AI travel recommendation engine
 • Multi-user authentication
 
----
+--- -->
 
 <!-- # Author
 
