@@ -70,6 +70,7 @@ Stores trip sessions and generated plans in JSON files.
 
 Flow:
 
+```text
 Frontend UI (Vanilla JS)
 ↓
 FastAPI Backend
@@ -77,11 +78,13 @@ FastAPI Backend
 AI Travel Planning Agent
 ↓
 Trip Session Storage (JSON)
+```
 
 ---
 
 # Agent Workflow
 
+```text
 User creates or selects a trip session
 ↓
 User sends a travel request (destination, duration, preferences, budget)
@@ -95,11 +98,13 @@ Plan is returned to the backend
 Plan is persisted to trip session storage
 ↓
 Frontend renders the response as chat bubbles
+```
 
 ---
 
 # Key Features
 
+```text
 ✔ Conversational travel planning
 ✔ Multiple trip sessions
 ✔ Iterative itinerary refinement
@@ -108,11 +113,13 @@ Frontend renders the response as chat bubbles
 ✔ Chat-style interaction interface
 ✔ Lightweight local storage architecture
 ✔ Simple deployment with minimal dependencies
+```
 
 ---
 
 # Tech Stack
 
+```text
 Backend
 Python
 FastAPI
@@ -127,6 +134,7 @@ CSS
 
 Storage
 JSON file-based storage
+```
 
 ---
 
@@ -198,6 +206,7 @@ Trip sessions store the entire planning history, enabling iterative travel plann
 
 # UI Interaction Model
 
+```text
 Sidebar
 
 • Create new trips
@@ -210,6 +219,7 @@ Chat Interface
 • User prompt input
 • AI-generated itinerary response
 • Persistent conversation per trip
+```
 
 ---
 
