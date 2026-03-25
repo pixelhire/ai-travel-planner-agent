@@ -1,0 +1,225 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: #0f172a;
+  color: white;
+}
+
+/* ============================= */
+/* Layout */
+/* ============================= */
+
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ============================= */
+/* Sidebar */
+/* ============================= */
+
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+
+  padding: 24px;
+
+  background: #0b1a33;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+}
+
+#newTripBtn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #22c55e;
+  color: white;
+
+  cursor: pointer;
+}
+
+.trip-item.active {
+  background: #22c55e;
+  border-radius: 6px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.sidebar li:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar li.active {
+  background: #22c55e;
+}
+
+/* ============================= */
+/* Main area */
+/* ============================= */
+
+.main {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 32px;
+
+  overflow: hidden;
+}
+
+header {
+  margin-bottom: 20px;
+}
+
+/* ============================= */
+/* Chat container */
+/* ============================= */
+
+.chat-container {
+  flex: 1;
+
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding-right: 10px;
+}
+
+/* ============================= */
+/* Chat bubbles */
+/* ============================= */
+
+.message {
+  max-width: 700px;
+
+  padding: 12px 14px;
+
+  border-radius: 10px;
+
+  line-height: 1.6;
+
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  font-size: 14px;
+}
+
+/* user */
+
+.message.user {
+  background: #22c55e;
+  align-self: flex-end;
+}
+
+/* bot */
+
+.message.bot {
+  background: rgba(255, 255, 255, 0.08);
+  align-self: flex-start;
+}
+
+/* JSON formatting */
+
+.message pre {
+  margin: 0;
+
+  font-family: monospace;
+  font-size: 13px;
+
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ============================= */
+/* Chat input */
+/* ============================= */
+
+.chat-box {
+  display: flex;
+  gap: 10px;
+
+  margin-top: 16px;
+}
+
+.chat-box textarea {
+  flex: 1;
+
+  height: 60px;
+  resize: none;
+
+  padding: 12px;
+
+  border-radius: 8px;
+  border: none;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.chat-box button {
+  padding: 0 20px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #22c55e;
+  color: white;
+
+  cursor: pointer;
+}
+
+.trip-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.trip-title {
+  flex: 1;
+}
+
+.trip-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  color: white;
+}

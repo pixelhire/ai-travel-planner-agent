@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Travel Planner</title>
+
+    <link rel="stylesheet" href="static/styles.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="layout">
+      <div class="sidebar">
+        <h2>Trips</h2>
+
+        <button id="newTripBtn">+ New Trip</button>
+
+        <ul id="tripList"></ul>
+      </div>
+
+      <div class="main">
+        <header>
+          <h1>AI Travel Planner</h1>
+          <p>Plan trips with AI</p>
+        </header>
+
+        <div id="chatContainer" class="chat-container"></div>
+
+        <div class="chat-box">
+          <textarea
+            id="query"
+            placeholder="Plan a 7 day trip to Japan"
+          ></textarea>
+
+          <button id="sendBtn">Generate</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="static/app.js"></script>
+  </body>
+</html>
