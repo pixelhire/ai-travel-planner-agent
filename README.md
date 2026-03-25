@@ -34,19 +34,21 @@ Each refinement becomes part of the trip’s conversation history.
 
 # Architecture
 
+```text
 User Query
-↓
+   ↓
 Trip Session Manager
-↓
+   ↓
 AI Travel Planning Agent
-↓
+   ↓
 LLM Reasoning Engine
-↓
+   ↓
 Generate Travel Plan (input → output)
-↓
+   ↓
 Persist Plan to Trip Storage
-↓
+   ↓
 Render Conversation in UI
+```
 
 ---
 
@@ -271,11 +273,11 @@ http://localhost:8000
 
 # Screenshots
 
-(Add UI screenshots here)
-
 • Chat interface
 • Trip sidebar
 • Generated travel itinerary
+
+![AI Travel Planner UI](assets/chat-ui.png)
 
 ---
 
