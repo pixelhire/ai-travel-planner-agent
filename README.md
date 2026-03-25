@@ -1,10 +1,34 @@
 # AI Travel Planner Agent
 
-An AI-powered travel planning system that generates personalized trip itineraries through a conversational interface.
+AI Travel Planner Agent is an intelligent travel planning system that generates personalized travel itineraries through a conversational interface.
 
 Users can create multiple trip sessions, ask follow-up questions, and iteratively refine travel plans while maintaining organized trip history.
 
-The system combines an AI planning agent, persistent trip storage, and a lightweight chat-based UI to deliver structured travel itineraries.
+The system combines an AI planning agent, persistent trip storage, and a lightweight chat-based UI to simulate how modern AI assistants help users plan trips.
+
+---
+
+# Overview
+
+The application provides a conversational interface where users interact with an AI agent to generate and refine travel itineraries.
+
+Each trip is stored as an independent session that preserves its planning history, allowing users to iteratively modify travel plans without affecting other trips.
+
+Typical usage flow:
+
+User asks:
+
+Plan a 6 day trip to Bali
+
+The AI agent generates a structured itinerary including daily activities and recommendations.
+
+Users can refine the plan with follow-up prompts such as:
+
+Make it budget friendly
+Add beach activities
+Extend the trip to 8 days
+
+Each refinement becomes part of the trip’s conversation history.
 
 ---
 
@@ -16,7 +40,7 @@ Trip Session Manager
 ↓
 AI Travel Planning Agent
 ↓
-LLM Reasoning
+LLM Reasoning Engine
 ↓
 Generate Travel Plan (input → output)
 ↓
@@ -28,11 +52,27 @@ Render Conversation in UI
 
 # System Architecture
 
+The project follows a lightweight layered architecture.
+
+Frontend Layer
+Handles UI rendering, chat interaction, and trip navigation.
+
+API Layer
+FastAPI backend responsible for request handling and trip management.
+
+Agent Layer
+Processes user prompts and generates travel itineraries using an LLM.
+
+Persistence Layer
+Stores trip sessions and generated plans in JSON files.
+
+Flow:
+
 Frontend UI (Vanilla JS)
 ↓
 FastAPI Backend
 ↓
-Travel Planning Agent
+AI Travel Planning Agent
 ↓
 Trip Session Storage (JSON)
 
@@ -42,21 +82,21 @@ Trip Session Storage (JSON)
 
 User creates or selects a trip session
 ↓
-User sends travel request (destination, days, budget, etc.)
+User sends a travel request (destination, duration, preferences, budget)
 ↓
-Request is processed by the AI planning agent
+Request is forwarded to the AI planning agent
 ↓
 LLM generates a structured travel itinerary
 ↓
 Plan is returned to the backend
 ↓
-Plan is stored in trip session storage
+Plan is persisted to trip session storage
 ↓
-UI renders conversation as chat bubbles
+Frontend renders the response as chat bubbles
 
 ---
 
-# Features
+# Key Features
 
 ✔ Conversational travel planning
 ✔ Multiple trip sessions
@@ -65,18 +105,25 @@ UI renders conversation as chat bubbles
 ✔ Trip rename and deletion
 ✔ Chat-style interaction interface
 ✔ Lightweight local storage architecture
-✔ Simple deployment with no external database
+✔ Simple deployment with minimal dependencies
 
 ---
 
 # Tech Stack
 
+Backend
 Python
 FastAPI
+
+AI
 OpenAI API
+
+Frontend
 Vanilla JavaScript
 HTML
 CSS
+
+Storage
 JSON file-based storage
 
 ---
@@ -95,7 +142,7 @@ Trip structure:
     {
       "id": "plan-id",
       "plan": {
-        "input": "User request",
+        "input": "User prompt",
         "output": "Generated itinerary"
       }
     }
@@ -103,7 +150,9 @@ Trip structure:
 }
 ```
 
-Each plan represents a single interaction between the user and the AI travel agent.
+Each entry in `plans` represents a conversation interaction between the user and the AI travel planning agent.
+
+This structure allows the system to maintain the full planning history of each trip.
 
 ---
 
@@ -113,37 +162,35 @@ Each plan represents a single interaction between the user and the AI travel age
 ai-travel-planner-agent
 
 backend
- ├─ routes
- │   └─ trips_routes.py
- ├─ services
- │   └─ trip_service.py
- ├─ utils
- │   └─ config.py
+ ├── routes
+ │    └── trips_routes.py
+ ├── services
+ │    └── trip_service.py
+ ├── agents
+ │    └── travel_planner_agent.py
+ └── utils
+      └── config.py
 
 frontend
- ├─ static
- │   ├─ app.js
- │   └─ styles.css
- └─ templates
-     └─ index.html
+ ├── static
+ │    ├── app.js
+ │    └── styles.css
+ └── templates
+      └── index.html
 
 trips
- └─ JSON trip storage
+ └── JSON trip storage
 ```
 
 ---
 
 # Trip Session Management
 
-Each trip acts as an independent session.
+Each trip functions as an independent planning session.
 
-Trips allow users to:
+Users can maintain multiple trips simultaneously and refine travel plans through conversation.
 
-• Organize multiple travel plans
-• Iterate on travel ideas
-• Maintain conversation context per trip
-
-This design mirrors how modern AI systems structure conversations.
+Trip sessions store the entire planning history, enabling iterative travel planning similar to modern AI assistants.
 
 ---
 
@@ -168,41 +215,41 @@ Chat Interface
 
 The system uses file-based JSON storage for simplicity and transparency.
 
-Benefits:
+Advantages of this approach:
 
-• No external database required
-• Easy debugging
-• Human-readable trip history
-• Lightweight local development
+No database dependency
+Easy debugging and inspection
+Human-readable trip history
+Lightweight development environment
 
 ---
 
 # Example Interaction
 
-User
+User:
 
 ```
 Plan a 6 day trip to Bali
 ```
 
-Agent Response
+Agent Response:
 
 ```
-Day 1: Arrival in Bali
-Day 2: Explore Ubud
-Day 3: Nusa Penida Day Trip
-Day 4: Tanah Lot & Canggu
-Day 5: Beach relaxation
-Day 6: Departure
+Day 1 – Arrival in Bali
+Day 2 – Explore Ubud temples and rice terraces
+Day 3 – Nusa Penida island tour
+Day 4 – Tanah Lot sunset and Canggu beach
+Day 5 – Beach relaxation and spa
+Day 6 – Departure
 ```
 
-User can refine the plan:
+User refinement:
 
 ```
-Make it budget friendly
+Make the trip budget friendly
 ```
 
-The agent generates an updated itinerary while preserving the trip session.
+The agent returns an updated itinerary while preserving the trip session.
 
 ---
 
@@ -220,20 +267,25 @@ Open the application in your browser:
 http://localhost:8000
 ```
 
-<!-- ---
+---
 
+# Screenshots
+
+(Add UI screenshots here)
+
+• Chat interface
+• Trip sidebar
+• Generated travel itinerary
+
+---
+
+<!--
 # Future Improvements
 
 • Structured itinerary UI (days, activities, budget)
 • Travel cost estimation
 • Flight and hotel API integration
 • Vector memory for travel context
-• AI travel recommendation engine
+• Multi-agent planning workflow
 • Multi-user authentication
-
---- -->
-
-<!-- # Author
-
-Sagar S
-AI Engineer / Systems Builder -->
+-->
