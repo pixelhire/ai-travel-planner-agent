@@ -9,18 +9,37 @@ def generate_itinerary(query :str):
 
 
     prompt = f""" 
-Create a travel plan for the following request:
+You are an expert travel planner.
 
+Create a detailed travel plan. 
+
+User Request:
 {query}
+
+Include :
+- best attractions
+- recommended hotels
+- transport suggestions
+- food experience
+- daily activities
+- estinamte budget
+
+Return ONLY VALID JSON.
+
+Do NOT return explanation text.
+Do NOT return markdown.
+Do NOT return bullet points.
+
 
 Return ONLY valid JSON in this format:
 
 {{
   "destination": "",
   "days": 0,
-  "total_budget": 0,
   "best_season": "",
   "weather": "",
+  "transport":"",
+  "accommodation":"",
   "itinerary": [
     {{
       "day": 1,
@@ -28,10 +47,11 @@ Return ONLY valid JSON in this format:
     }}
   ],
   "budget": {{
-    "flights": 0,
+    "transport": 0,
     "hotels": 0,
     "food": 0,
-    "activities": 0
+    "activities": 0,
+    "total":0
   }}
 }}
 """

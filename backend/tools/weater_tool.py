@@ -1,11 +1,15 @@
 from ddgs import DDGS
 
-def find_hotels(destination: str):
-    query = f"Find best hotels or stay option in {destination}"
+
+def find_weather(destination:str):
+
+    query = f"Find the weather details in {destination}"
+
     results = []
 
     with DDGS() as ddgs:
-        search_results = ddgs.text(query, max_results = 5)
+        search_results = ddgs.text(query, max_results = 3)
+
         for result in search_results:
             results.append({
                 "name":result["name"],

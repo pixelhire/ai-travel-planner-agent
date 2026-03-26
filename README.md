@@ -34,7 +34,7 @@ Each refinement becomes part of the trip’s conversation history.
 
 # Architecture
 
-```text
+<!-- ```text
 User Query
    ↓
 Trip Session Manager
@@ -48,6 +48,54 @@ Generate Travel Plan (input → output)
 Persist Plan to Trip Storage
    ↓
 Render Conversation in UI
+``` -->
+
+```text
+
+                              ┌───────────────────────┐
+                              │        Client         │
+                              │     Web / Mobile      │
+                              └───────────┬───────────┘
+                                          │
+                                          ▼
+                              ┌───────────────────────┐
+                              │      Load Balancer     │
+                              │         (Nginx)        │
+                              └───────────┬───────────┘
+                                          │
+             ┌────────────────────────────┼────────────────────────────┐
+             ▼                            ▼                            ▼
+      ┌───────────────┐           ┌───────────────┐           ┌───────────────┐
+      │   Travel API   │           │   Travel API   │           │   Travel API   │
+      │   Instance 1   │           │   Instance 2   │           │   Instance 3   │
+      │    (FastAPI)   │           │    (FastAPI)   │           │    (FastAPI)   │
+      └───────┬────────┘           └───────┬────────┘           └───────┬────────┘
+              │                            │                            │
+              └───────────────┬────────────┴────────────┬───────────────┘
+                              ▼                         ▼
+                     ┌─────────────────────────────────────────┐
+                     │              Kafka Cluster               │
+                     │           Event Streaming Bus            │
+                     │       Topics: planner / research         │
+                     │       transport / accommodation          │
+                     └─────────────────────┬────────────────────┘
+                                           │
+         ┌─────────────────────────────────┼─────────────────────────────────┐
+         ▼                                 ▼                                 ▼
+ ┌────────────────┐               ┌────────────────┐               ┌────────────────┐
+ │  Research       │               │  Transport      │               │ Accommodation  │
+ │  Worker Pool    │               │  Worker Pool    │               │  Worker Pool   │
+ │  (Consumers)    │               │  (Consumers)    │               │  (Consumers)   │
+ └─────────┬───────┘               └─────────┬───────┘               └─────────┬───────┘
+           │                                 │                                 │
+           └───────────────────────┬─────────┴─────────┬───────────────────────┘
+                                   ▼                   ▼
+                        ┌────────────────────────────────────┐
+                        │        Travel Planner Database      │
+                        │         PostgreSQL / Redis          │
+                        │   Trips • Itineraries • Results     │
+                        └────────────────────────────────────┘
+
 ```
 
 ---
@@ -270,7 +318,7 @@ The agent returns an updated itinerary while preserving the trip session.
 Start the FastAPI server:
 
 ```bash
-uvicorn main:app --reload
+uvicorn main:app --reload or uvicorn backend.main:app --reload
 ```
 
 Open the application in your browser:
