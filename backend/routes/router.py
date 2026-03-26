@@ -18,3 +18,4 @@ def plan_trip_api(request: TripRequest):
 
 
 
+

@@ -12,6 +12,7 @@ from backend.routes.router import router as request_router
 from backend.routes.trips_routes import router as trips_request_router
 
 import uvicorn
+import socket
 
 
 app = FastAPI()
@@ -46,6 +47,11 @@ app.mount(
 @app.get("/")
 async def serve_frontend():
     return FileResponse("frontend/index.html")
+
+
+@app.get("/whoami")
+def whoami():
+    return {"server": socket.gethostname()}
 
 
 # ---------- RUN SERVER ----------

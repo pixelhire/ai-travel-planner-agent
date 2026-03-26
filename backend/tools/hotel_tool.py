@@ -8,8 +8,8 @@ def find_hotels(destination: str):
         search_results = ddgs.text(query, max_results = 5)
         for result in search_results:
             results.append({
-                "name":result["name"],
-                "link":result["link"],
+                "name":result["title"],
+                "link":result["href"],
                 "description":result["body"],
             })
 

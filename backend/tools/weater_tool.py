@@ -12,8 +12,8 @@ def find_weather(destination:str):
 
         for result in search_results:
             results.append({
-                "name":result["name"],
-                "link":result["link"],
+                "name":result["title"],
+                "link":result["href"],
                 "description":result["body"],
             })
 

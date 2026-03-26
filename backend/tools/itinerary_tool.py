@@ -8,41 +8,31 @@ llm = get_llm()
 def generate_itinerary(query :str):
 
 
-    prompt = f""" 
+    prompt = f"""
 You are an expert travel planner.
 
-Create a detailed travel plan. 
+Create a detailed travel itinerary.
 
-User Request:
+User request:
 {query}
 
-Include :
-- best attractions
-- recommended hotels
-- transport suggestions
-- food experience
-- daily activities
-- estinamte budget
+Return ONLY valid JSON.
 
-Return ONLY VALID JSON.
+Do NOT include explanations, markdown, or text outside JSON.
 
-Do NOT return explanation text.
-Do NOT return markdown.
-Do NOT return bullet points.
-
-
-Return ONLY valid JSON in this format:
+Use this exact schema:
 
 {{
   "destination": "",
   "days": 0,
   "best_season": "",
   "weather": "",
-  "transport":"",
-  "accommodation":"",
+  "transport": "",
+  "accommodation": "",
   "itinerary": [
     {{
       "day": 1,
+      "title": "",
       "activities": []
     }}
   ],
@@ -51,7 +41,7 @@ Return ONLY valid JSON in this format:
     "hotels": 0,
     "food": 0,
     "activities": 0,
-    "total":0
+    "total": 0
   }}
 }}
 """

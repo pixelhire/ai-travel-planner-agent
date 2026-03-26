@@ -1,29 +1,62 @@
-version: "3.9"
-
-# run the project : docker compose up --build
-
 services:
-  research-agent:
-    # build: . This is shortcut of below build code
-    build:
-      context: .
-      dockerfile: Dockerfile
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
 
-    container_name: ai-travel-palnner-agent
-
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    depends_on:
+      - zookeeper
     ports:
-      - "8000:8000"
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      # KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false" // use this when using scripts/create_topics.sh to custome kafka topics,
 
+  api1:
+    build: .
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
     env_file:
       - backend/.env
-
     volumes:
       - ./data:/app/data
       - ../.secrets:/app/.secrets
+    depends_on:
+      - kafka
 
-    restart: unless-stopped
+  api2:
+    build: .
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    env_file:
+      - backend/.env
+    volumes:
+      - ./data:/app/data
+      - ../.secrets:/app/.secrets
+    depends_on:
+      - kafka
 
-    command: >
-      uvicorn backend.main:app
-      --host 0.0.0.0
-      --port 8000
+  api3:
+    build: .
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    env_file:
+      - backend/.env
+    volumes:
+      - ./data:/app/data
+      - ../.secrets:/app/.secrets
+    depends_on:
+      - kafka
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - api1
+      - api2
+      - api3
