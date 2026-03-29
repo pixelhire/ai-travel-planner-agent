@@ -24,7 +24,8 @@ def list_trips():
                 trips.append({
     "id": data["id"],
     "title": data["title"],
-    "plans": data.get("plans", [])
+    "plans": data.get("plans", []),
+    "final_plan": data.get("final_plan"),   
 })
                 
 
@@ -40,15 +41,29 @@ def create_trip():
     data = {
         "id": trip_id,
         "title": "New Trip",
+        "destination": None,
+        "days": 3,
+
+        # ✅ NEW STRUCTURE
+        "status": {
+            "expected_tasks": [],
+            "completed_tasks": []
+        },
+
+        "results": {},
+        "final_plan": {},
+        "history": [],
+
+        # ✅ keep old fields (DO NOT REMOVE)
         "plans": [],
-        "chat": []
+        "chat": [],
+        "last_query": ""
     }
 
     with open(trip_file(trip_id), "w") as f:
         json.dump(data, f, indent=2)
 
     return data
-
 
 def get_trip(trip_id):
 
@@ -83,8 +98,12 @@ def save_plan(trip_id, plan):
     if not trip:
         return None
 
-    if "plans" not in trip:
-        trip["plans"] = []
+    trip.setdefault("plans", [])
+
+    # ✅ prevent duplicate plan (stronger check)
+    for p in trip["plans"]:
+        if p.get("plan") == plan:
+            return p
 
     plan_entry = {
         "id": str(uuid.uuid4()),
@@ -93,7 +112,9 @@ def save_plan(trip_id, plan):
 
     trip["plans"].append(plan_entry)
 
-    trip["title"] = plan.get("destination", trip["title"])
+    # ✅ safer title update
+    if not trip.get("title") or trip["title"] == "New Trip":
+        trip["title"] = plan.get("destination", trip["title"])
 
     with open(trip_file(trip_id), "w") as f:
         json.dump(trip, f, indent=2)

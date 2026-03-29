@@ -13,9 +13,28 @@ from backend.routes.trips_routes import router as trips_request_router
 
 import uvicorn
 import socket
+from contextlib import asynccontextmanager
+import subprocess
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("🚀 Starting FastAPI app...")
+
+    if not os.environ.get("WORKERS_STARTED"):
+        os.environ["WORKERS_STARTED"] = "1"
+
+        print("🚀 Launching workers process...")
+
+        subprocess.Popen(
+            [sys.executable, "backend/messaging/run_workers.py"]
+        )
+
+    yield
+
+    print("🛑 Shutting down FastAPI app...")
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 
 # ---------- CORS ----------

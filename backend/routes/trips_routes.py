@@ -1,5 +1,8 @@
-from fastapi import APIRouter
+from typing import Optional
+from fastapi import APIRouter, Body
 from pydantic import BaseModel
+
+from fastapi import HTTPException
 
 from backend.services.trip_service import (
     list_trips,
@@ -15,7 +18,7 @@ router = APIRouter(prefix="/trips")
 
 class PlanRequest(BaseModel):
     trip_id: str
-    plan: dict
+    plan: Optional[dict] = None
 
 
 class RenameRequest(BaseModel):
@@ -39,6 +42,9 @@ def load_trip(trip_id: str):
 
 @router.put("/{trip_id}/plan")
 def save_trip_plan(trip_id: str, request: PlanRequest):
+    if not request.plan:
+        raise HTTPException(status_code=400, detail="Plan missing")
+
     return save_plan(trip_id, request.plan)
 
 
@@ -50,3 +56,4 @@ def rename_trip_api(trip_id: str, request: RenameRequest):
 @router.delete("/{trip_id}")
 def delete_trip_api(trip_id: str):
     return {"deleted": delete_trip(trip_id)}
+
