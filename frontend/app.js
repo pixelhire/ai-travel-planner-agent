@@ -8,6 +8,8 @@ const tripList = document.getElementById("tripList");
 const newTripBtn = document.getElementById("newTripBtn");
 const chatContainer = document.getElementById("chatContainer");
 let hasShownFinal = false;
+let activeQuery = null;
+let activeResponseEl = null;
 
 // ================================
 // STATE
@@ -85,7 +87,7 @@ async function openTrip(id) {
   sessionStorage.setItem("trip_id", id);
 
   // ✅ reset UI state
-  chatContainer.innerHTML = "";
+  // chatContainer.innerHTML = "";
   lastPlanCount = 0;
   hasShownFinal = false;
 
@@ -146,7 +148,7 @@ async function openTrip(id) {
   }
 
   // ✅ start live updates AFTER initial render
-  startStreaming();
+  // startStreaming();
 
   renderTrips();
 }
@@ -183,6 +185,11 @@ function startStreaming() {
     try {
       const res = await fetch(`/trips/${currentTrip}`);
       const trip = await res.json();
+      // console.log("🔄 STREAM POLL");
+      // console.log("👉 Trip ID:", currentTrip);
+      // console.log("👉 Last Query (server):", trip.last_query);
+      // console.log("👉 Final Plan Input:", trip.final_plan?.input);
+      // console.log("👉 hasShownFinal:", hasShownFinal);
 
       // ✅ SUPPORT BOTH NEW + OLD STRUCTURE
       const expected =
@@ -193,7 +200,10 @@ function startStreaming() {
 
       // ✅ update progress UI
       if (completed.length === expected.length) {
-        removeLoading(); // ✅ remove when done
+        // removeLoading(); // ✅ remove when done
+        updateLoading(
+          "⚡ Optimizing itinerary...\n💰 Calculating budget...\n✨ Preparing final plan..."
+        );
       } else {
         let statusText = expected
           .map((task) =>
@@ -209,17 +219,25 @@ function startStreaming() {
       // =========================================================
       // 🔥 NEW STRUCTURE (PRIMARY): final_plan
       // =========================================================
+      // console.log("🧠 CHECKING FINAL PLAN CONDITION");
       if (
         trip.final_plan?.output &&
         !hasShownFinal &&
         completed.length === expected.length &&
-        trip.final_plan.input === trip.last_query
+        trip.final_plan.input === activeQuery
       ) {
-        removeLoading(); // ✅ remove progress UI
+        removeLoading();
 
         addBotMessage(trip.final_plan.output);
 
         hasShownFinal = true;
+
+        // ✅ STOP STREAMING HERE (VERY IMPORTANT)
+        clearInterval(streamingInterval);
+        streamingInterval = null;
+
+        // console.log("🛑 Streaming stopped (final result received)");
+
         return;
       }
 
@@ -356,27 +374,38 @@ async function generatePlan() {
   const query = queryInput.value.trim();
   if (!query) return;
 
-  // ✅ ensure trip exists
+  // console.log("🚀 NEW QUERY STARTED");
+  // console.log("👉 Query:", query);
+  // console.log("👉 Current Trip:", currentTrip);
+
   if (!currentTrip) {
     await createTrip(true);
   }
 
-  // ✅ reset state BEFORE anything
+  // console.log("🧹 Clearing UI...");
+  // chatContainer.innerHTML = "";
+
   hasShownFinal = false;
   lastPlanCount = 0;
 
+  // console.log("🔄 State Reset:", {
+  //   hasShownFinal,
+  //   lastPlanCount,
+  // });
+
   queryInput.value = "";
 
-  // ✅ show user message
   addUserMessage(query);
 
-  // 🔥 REMOVE any stale loading or ghost state
-  removeLoading();
+  // console.log("📩 User message added");
 
-  // ✅ show fresh loading
+  removeLoading();
   showLoading();
 
+  // console.log("⏳ Loading started");
+
   try {
+    console.log("📡 Sending request to backend...");
     await fetch("/plan-trip", {
       method: "POST",
       headers: {
@@ -387,9 +416,12 @@ async function generatePlan() {
         query: query,
       }),
     });
+    activeQuery = query;
+    startStreaming();
 
-    // ❌ DO NOT wait here (streaming handles UI)
+    console.log("✅ Request sent (async processing now)");
   } catch (err) {
+    console.error("❌ API ERROR", err);
     removeLoading();
     addBotMessage("Error generating trip.");
   }
@@ -405,10 +437,25 @@ function addUserMessage(text) {
   div.textContent = text;
 
   chatContainer.appendChild(div);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  chatContainer.scrollTo({
+    top: chatContainer.scrollHeight,
+    behavior: "smooth",
+  });
 }
 
 function addBotMessage(text) {
+  // console.log("🤖 BOT MESSAGE ADDED");
+
+  // ✅ If active response exists → overwrite it
+  if (activeResponseEl) {
+    activeResponseEl.textContent = text;
+
+    // ✅ reset after final response
+    activeResponseEl = null;
+    return;
+  }
+
+  // ✅ fallback (normal behavior for history)
   const div = document.createElement("div");
   div.className = "message bot";
 
@@ -418,30 +465,42 @@ function addBotMessage(text) {
   div.appendChild(pre);
 
   chatContainer.appendChild(div);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  chatContainer.scrollTo({
+    top: chatContainer.scrollHeight,
+    behavior: "smooth",
+  });
 }
 
 function showLoading() {
   const div = document.createElement("div");
   div.className = "message bot";
   div.id = "loading";
-  div.textContent = "✈️ Planning trip...";
+
+  const pre = document.createElement("pre");
+  pre.textContent = "✈️ Planning trip...";
+
+  div.appendChild(pre);
+
   chatContainer.appendChild(div);
+
+  chatContainer.scrollTo({
+    top: chatContainer.scrollHeight,
+    behavior: "smooth",
+  });
+
+  // ✅ store reference
+  activeResponseEl = pre;
 }
 
 function removeLoading() {
   const el = document.getElementById("loading");
   if (el) el.remove();
+
+  activeResponseEl = null; // ✅ reset
 }
 
 function updateLoading(text) {
-  let el = document.getElementById("loading");
+  if (!activeResponseEl) return;
 
-  // ✅ show only if still processing
-  if (!el && text.includes("⏳")) {
-    showLoading();
-    el = document.getElementById("loading");
-  }
-
-  if (el) el.textContent = text;
+  activeResponseEl.textContent = text; // ✅ update SAME element
 }
