@@ -5,7 +5,7 @@ echo "Creating Kafka topics..."
 topics=(
   activities_topic
   hotels_topic
-  itinerary_topic
+  # itinerary_topic
   budget_topic
   transport_topic
   weather_topic

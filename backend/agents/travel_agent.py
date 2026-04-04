@@ -45,11 +45,11 @@ tools = [
         description="Find transport options for destination"
     ),
 
-    Tool(
-        name="Generate Itinerary",
-        func=generate_itinerary,
-        description="Generate day-wise travel itinerary"
-    ),
+    # Tool(
+    #     name="Generate Itinerary",
+    #     func=generate_itinerary,
+    #     description="Generate day-wise travel itinerary"
+    # ),
 ]
 
 
@@ -61,6 +61,18 @@ travel_agent = initialize_agent(
     handle_parsing_errors=True,
 )
 
+
+#this is commented because not using langchane now .. Using only kafka 
+# def run_travel_agent(query: str):
+#     response = travel_agent.run(query)
+#     return response
+
+
+
 def run_travel_agent(query: str):
-    response = travel_agent.run(query)
-    return response
+    response = llm.invoke(query)
+
+    try:
+        return response.content.strip()
+    except:
+        return ""

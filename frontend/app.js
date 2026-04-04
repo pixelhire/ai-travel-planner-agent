@@ -78,7 +78,6 @@ async function createTrip(setSession = false) {
     chatContainer.innerHTML = "";
     activeResponseEl = null;
     hasShownFinal = false;
-
   } catch (err) {
     console.error("Create trip failed", err);
   }
@@ -395,7 +394,21 @@ function addBotMessage(text) {
   div.className = "message bot";
 
   const pre = document.createElement("pre");
-  pre.textContent = text;
+  // 🔥 CLEAN "content='...'" garbage
+  let cleanedText = text;
+
+  // remove content='...'
+  if (cleanedText.startsWith("content=")) {
+    const match = cleanedText.match(/content=['"](.*)['"]/s);
+    if (match && match[1]) {
+      cleanedText = match[1];
+    }
+  }
+
+  // remove escaped newlines
+  cleanedText = cleanedText.replace(/\\n/g, "\n");
+
+  pre.textContent = cleanedText;
 
   div.appendChild(pre);
   chatContainer.appendChild(div);

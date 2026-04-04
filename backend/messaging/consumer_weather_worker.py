@@ -1,4 +1,4 @@
-from backend.messaging.base_worker import start_worker
+# from backend.messaging.base_worker import start_worker
 
 def weather_query(data):
     return f"""
@@ -8,12 +8,17 @@ Provide weather details.
 
 Destination: {data['destination']}
 
-Include:
-- current weather
-- best time to visit
-- travel tips
+RULES:
+- ONLY use the given destination
+- Provide realistic seasonal info
 
-ONLY use the given destination.
+OUTPUT FORMAT (STRICT JSON):
+
+{{
+  "current_weather": "",
+  "best_time_to_visit": "",
+  "travel_tip": ""
+}}
 """
 
-start_worker("weather_topic", "weather_workers", "weather", weather_query)
+# start_worker("weather_topic", "weather_workers", "weather", weather_query)

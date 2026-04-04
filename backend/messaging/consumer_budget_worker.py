@@ -1,4 +1,4 @@
-from backend.messaging.base_worker import start_worker
+# from backend.messaging.base_worker import start_worker
 
 def budget_query(data):
     return f"""
@@ -10,14 +10,20 @@ Destination: {data['destination']}
 Duration: {data['days']} days
 Budget type: {data['budget']}
 
-Include:
-- hotel cost
-- food cost
-- transport cost
-- activities cost
-- total estimate
+RULES:
+- Provide realistic cost estimates
+- NEVER return "Not available"
+- Use approximate ranges if unsure
 
-Return clean breakdown.
+OUTPUT FORMAT (STRICT JSON):
+
+{{
+  "stay_per_night": "",
+  "food_per_day": "",
+  "transport": "",
+  "activities": "",
+  "total_estimate": ""
+}}
 """
 
-start_worker("budget_topic", "budget_workers", "budget", budget_query)
+# start_worker("budget_topic", "budget_workers", "budget", budget_query)

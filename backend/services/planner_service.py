@@ -76,7 +76,7 @@ Rules:
 - Do NOT include "destination" as a task
 - Only include necessary tasks
 - Keep tasks from this list only:
-  ["activities", "hotels", "transport", "weather", "itinerary", "budget"]
+  ["activities", "hotels", "transport", "weather", "budget"]
 
 Return ONLY valid JSON. No explanation.
 
@@ -106,10 +106,10 @@ Format:
 
     # 🔥 fallback if LLM fails
     if not tasks:
-        tasks = ["activities", "hotels", "itinerary", "weather", "itinerary", "budget"]
+        tasks = ["activities", "hotels", "transport", "weather", "budget"]
 
     # 🔥 sanitize tasks (IMPORTANT)
-    allowed = {"activities", "hotels", "transport", "weather", "itinerary", "budget"}
+    allowed = {"activities", "hotels", "transport", "weather",  "budget"}
     tasks = [t for t in tasks if t in allowed]
 
     # ensure minimum tasks
@@ -172,6 +172,7 @@ IMPORTANT RULES:
 - Do NOT add extra days
 - Do NOT assume default durations like 3 or 5 days
 - Use ONLY the provided data
+- DO NOT use markdown (*, #, -, etc.)
 - If some data is missing, still keep the plan realistic
 
 ---------------------
@@ -199,39 +200,55 @@ Raw Itinerary Input:
 
 OUTPUT FORMAT:
 
-Title: Travel Plan for {destination}
+Start EXACTLY like this:
 
-Day 1:
-- Morning:
-- Afternoon:
-- Evening:
+Here is a detailed {days}-day travel itinerary for {destination}:
+
+Best Season to Visit:
+- Provide based on weather data
+
+Transportation:
+- Provide transport options with cost
+
+Accommodation:
+- List recommended hotels
+
+Itinerary:
+
+Day 1: <Title>
+- Activity 1
+- Activity 2
+- Activity 3
 
 Day 2:
 ...
 
 (continue until Day {days})
 
----------------------
+Estimated Budget:
+- Transport: 
+- Hotels: 
+- Food: 
+- Activities: 
+- Total: 
 
-Also include:
-
-1. Budget Summary
-2. Recommended Hotels
-3. Transport Options
-4. Best Time to Visit (based on weather)
-
-Keep it clean, structured, and practical.
+Final line:
+This itinerary provides a balanced mix of travel, exploration, and experience.
 """
 
     # =========================================================
     # ✅ CALL AGENT
     # =========================================================
-    response = run_travel_agent(prompt)
+    # response = run_travel_agent(prompt)
 
     # =========================================================
     # ✅ SAFETY CLEANUP (important for UI)
     # =========================================================
+
+    response = llm.invoke(prompt)
+
     if isinstance(response, str):
         return response.strip()
 
     return str(response)
+    

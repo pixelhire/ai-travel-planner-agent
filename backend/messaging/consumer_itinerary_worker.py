@@ -19,4 +19,4 @@ Rules:
 Return structured day-by-day plan.
 """
 
-start_worker("itinerary_topic", "itinerary_workers", "itinerary", itinerary_query)
+# start_worker("itinerary_topic", "itinerary_workers", "itinerary", itinerary_query)

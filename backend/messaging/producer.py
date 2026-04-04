@@ -8,7 +8,7 @@ TOPICS = {
     "hotels": "hotels_topic",
     "transport": "transport_topic",
     "weather": "weather_topic",
-    "itinerary": "itinerary_topic",
+    # "itinerary": "itinerary_topic",
     "budget": "budget_topic",
 }
 

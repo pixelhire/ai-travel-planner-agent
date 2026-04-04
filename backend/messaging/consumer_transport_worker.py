@@ -1,4 +1,4 @@
-from backend.messaging.base_worker import start_worker
+# from backend.messaging.base_worker import start_worker
 
 def transport_query(data):
     return f"""
@@ -8,12 +8,23 @@ Provide transport details.
 
 Destination: {data['destination']}
 
-Include:
-- how to reach (flight/train)
-- local transport
-- cost estimates
+RULES:
+- ONLY use the given destination
+- Include realistic transport options
+- Include cost estimates
+- NEVER return "Not available"
 
-ONLY use the given destination.
+OUTPUT FORMAT (STRICT JSON):
+
+{{
+  "transport": [
+    {{
+      "type": "flight/train/local",
+      "details": "",
+      "estimated_cost": ""
+    }}
+  ]
+}}
 """
 
-start_worker("transport_topic", "transport_workers", "transport", transport_query)
+# start_worker("transport_topic", "transport_workers", "transport", transport_query)

@@ -3,10 +3,11 @@ from backend.services.planner_service import generate_final_plan
 
 import json
 import uuid
+import os
 
 
 def save_result(trip_id, key, data):
-    print("Saving:", trip_id, key)
+    # print("Saving:", trip_id, key)
 
     file_path = trip_file(trip_id)
 
@@ -61,6 +62,18 @@ def save_result(trip_id, key, data):
     print("All tasks complete:", trip_id)
 
     # =========================================================
+    # 🔒 LOCK (PREVENT RACE CONDITION)
+    # =========================================================
+    lock_file = trip_file(trip_id) + ".lock"
+
+    if os.path.exists(lock_file):
+        print("⚠️ Lock exists, skipping duplicate final generation")
+        return
+
+    # create lock
+    open(lock_file, "w").close()
+
+    # =========================================================
     # 🔥 PREVENT MULTIPLE FINAL PLAN GENERATION (RACE FIX)
     # =========================================================
     if trip.get("final_plan") and trip["final_plan"].get("output"):
@@ -70,21 +83,37 @@ def save_result(trip_id, key, data):
     # =========================================================
     # ✅ GENERATE FINAL PLAN
     # =========================================================
-    final_plan = generate_final_plan(
-    trip["results"],
-    trip.get("destination"),
-    trip.get("days"),
-    trip["results"].get("transport"),
-    trip["results"].get("weather")
-)
+    try:
+        final_plan = generate_final_plan(
+            trip["results"],
+            trip.get("destination"),
+            trip.get("days"),
+            trip["results"].get("transport"),
+            trip["results"].get("weather")
+        )
+
+        final_plan = clean_llm_output(final_plan)
+        # print("Sending to clean the data :\n", final_plan)
+
+        trip["final_plan"] = {
+            "input": trip.get("last_query"),
+            "output": final_plan
+        }
+
+    # history + save_plan logic stays same
+
+    finally:
+        # 🔓 ALWAYS REMOVE LOCK (even if error happens)
+        if os.path.exists(lock_file):
+            os.remove(lock_file)
 
     # =========================================================
     # 🔥 STORE FINAL PLAN
     # =========================================================
-    trip["final_plan"] = {
-        "input": trip.get("last_query"),
-        "output": final_plan
-    }
+    # trip["final_plan"] = {
+    #     "input": trip.get("last_query"),
+    #     "output": final_plan
+    # }
 
     # =========================================================
     # 🔥 HISTORY (STRONG DUP CHECK)
@@ -139,3 +168,28 @@ def is_trip_complete_data(trip):
 
     return expected.issubset(completed)
 
+
+def clean_llm_output(text: str) -> str:
+    if not text:
+        return ""
+
+    text = str(text)
+
+    # 🔥 Cut everything after metadata
+    idx = text.find("additional_kwargs=")
+    if idx != -1:
+        text = text[:idx]
+
+    # 🔥 Remove leading content=
+    if text.startswith("content="):
+        text = text[len("content="):]
+
+    # 🔥 Clean quotes
+    text = text.strip().strip("'").strip('"')
+
+    # 🔥 Fix newlines
+    text = text.replace("\\n", "\n")
+
+    # print("String cleaned method :\n",text)
+
+    return text.strip()
