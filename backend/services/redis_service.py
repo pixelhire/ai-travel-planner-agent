@@ -1,5 +1,5 @@
 import json
-from backend.db.resdis import redis_client
+from backend.db.redis import redis_client
 
 
 # 🔑 Get value from cache

@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.routes.router import router as request_router
 from backend.routes.trips_routes import router as trips_request_router
 from backend.db.postgres_db import init_db
-from backend.db.resdis import init_redis
+from backend.db.redis import init_redis
 
 import uvicorn
 import socket
