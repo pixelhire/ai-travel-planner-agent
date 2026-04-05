@@ -15,6 +15,7 @@ from backend.messaging.consumer_hotels_worker import hotels_query
 from backend.messaging.consumer_transport_worker import transport_query
 from backend.messaging.consumer_weather_worker import weather_query
 from backend.messaging.consumer_budget_worker import budget_query
+from backend.services.activities_service import testing_connetion
 
 
 # ✅ Map task → prompt function

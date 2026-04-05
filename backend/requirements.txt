@@ -27,3 +27,6 @@ tenacity
 orjson
 
 kafka-python
+
+asyncpg 
+redis

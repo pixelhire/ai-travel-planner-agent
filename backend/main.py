@@ -10,6 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routes.router import router as request_router
 from backend.routes.trips_routes import router as trips_request_router
+from backend.db.postgres_db import init_db
+from backend.db.resdis import init_redis
 
 import uvicorn
 import socket
@@ -19,6 +21,22 @@ import subprocess
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("🚀 Starting FastAPI app...")
+
+    # DB init
+    try:
+        await init_db()
+        print("✅ PostgreSQL connected")
+    except Exception as e:
+        print(f"❌ DB connection failed: {e}")
+        raise e
+
+    # Redis init
+    try:
+        await init_redis()
+        print("✅ Redis connected")
+    except Exception as e:
+        print(f"❌ Redis connection failed: {e}")
+        raise e
 
     if not os.environ.get("WORKERS_STARTED"):
         os.environ["WORKERS_STARTED"] = "1"
@@ -71,6 +89,10 @@ async def serve_frontend():
 @app.get("/whoami")
 def whoami():
     return {"server": socket.gethostname()}
+
+@app.on_event("startup")
+async def startup():
+    await init_db()
 
 
 # ---------- RUN SERVER ----------

@@ -3,6 +3,7 @@ import os
 import uuid
 
 from backend.utils.config import TRIPS_DIR
+# from backend.services.activities_service import testing_connection
 
 
 def trip_file(trip_id):
@@ -83,6 +84,7 @@ def get_trip(trip_id):
 
         # print(f"[get_trip] Trip loaded successfully:")
         # print(data)
+        # testing_connection()
 
         return data
 
